@@ -1,0 +1,28 @@
+﻿@inherits ViewPage<List<Employer>>
+@{
+	ViewBag.Title = "Employers List";
+}
+
+<div>
+	<a href='/employers/0' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Add Employer</a>
+</div>
+
+<div class="table-responsive">
+	<table class='table table-condensed table-striped table-hover'>
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Company Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var m in Model)
+			{
+				<tr>
+					<td><a href='/employers/@m.Id'>@m.Id</a></td>
+					<td>@m.CompanyName</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>

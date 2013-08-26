@@ -4,25 +4,27 @@
 }
 
 <div>
-	<a href='/interns/0'>Add Intern</a>
+	<a href='/interns/0' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Add Intern</a>
 </div>
-			  
-<table border='1'>
-	<thead>
-		<tr>
-			<th>Id</th>
-			<th>FirstName</th>
-			<th>LastName</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var m in Model)
-		{
+
+<div class="table-responsive">
+	<table class='table table-condensed table-striped table-hover'>
+		<thead>
 			<tr>
-				<td>@m.Id</td>
-				<td>@m.FirstName</td>
-				<td>@m.LastName</td>
+				<th>Id</th>
+				<th>FirstName</th>
+				<th>LastName</th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (var m in Model)
+			{
+				<tr>
+					<td><a href='/interns/@m.Id'>@m.Id</a></td>
+					<td>@m.FirstName</td>
+					<td>@m.LastName</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>

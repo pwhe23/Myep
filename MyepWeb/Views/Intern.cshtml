@@ -3,21 +3,23 @@
 	ViewBag.Title = "Edit Intern";
 }
 
-<form method='post'>
-	<table>
-		<tr>
-			<th>Id</th>
-			<td>@Model.Id</td>
-		</tr>
-		<tr>
-			<th>FirstName</th>
-			<td>@Html.TextBox("FirstName", Model.FirstName)</td>
-		</tr>
-		<tr>
-			<th>LastName</th>
-			<td>@Html.TextBox("LastName", Model.LastName)</td>
-		</tr>
-	</table>
-	<input type='submit' value='Save Intern' />
-	<input type='button' value='Back to List' onclick='window.location="/interns"'/>
+<form method='post' role='form' class='form-horizontal'>
+	<div class='form-group'>
+		<label class='col-lg-2 control-label'>Id</label>
+		<div class='col-lg-10'><span class='form-control'>@Model.Id</span></div>
+	</div>
+	<div class='form-group'>
+		<label for='FirstName' class='col-lg-2 control-label'>First Name</label>
+		<div class='col-lg-10'>@Html.TextBox("FirstName", Model.FirstName, new { @class = "form-control", placeholder = "First Name" })</div>
+	</div>
+	<div class='form-group'>
+		<label for='LastName' class='col-lg-2 control-label'>Last Name</label>
+		<div class='col-lg-10'>@Html.TextBox("LastName", Model.LastName, new { @class = "form-control", placeholder = "Last Name" })</div>
+	</div>
+	<div class='form-group'>
+		<div class='col-lg-offset-2 col-lg-10'>
+			<button type='submit' class='btn btn-primary'><span class='glyphicon glyphicon-floppy-disk'></span> Save Intern</button>
+			<button type='button' onclick='window.location="/interns"' class='btn btn-default'><span class='glyphicon glyphicon-list'></span> Back to List</button>
+		</div>
+	</div>
 </form>

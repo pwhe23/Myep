@@ -31,7 +31,8 @@ namespace Site
 
 		private static void ConfigureContainer(Container container)
 		{
-			container.RegisterAutoWired<InternsRepository>().ReusedWithin(ReuseScope.None); 
+			container.RegisterAutoWired<EmployersRepository>().ReusedWithin(ReuseScope.None);
+			container.RegisterAutoWired<InternsRepository>().ReusedWithin(ReuseScope.None);
 		}
 
 		private static void ConfigureLogging()
@@ -51,7 +52,11 @@ namespace Site
 				CustomHttpHandlers = {
 					{ HttpStatusCode.NotFound, new RazorHandler("/notfound") },
 					{ HttpStatusCode.Unauthorized, new RazorHandler("/login") },
-				}
+				},
+				GlobalResponseHeaders = {
+					{ "Access-Control-Allow-Origin", "*" },
+					{ "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS" },
+				},
 			});
 		}
 

@@ -5,6 +5,7 @@ using ServiceStack.DataAnnotations;
 using ServiceStack.OrmLite;
 using ServiceStack.ServiceHost;
 using ServiceStack.ServiceInterface;
+using ServiceStack.ServiceInterface.Cors;
 
 namespace Site
 {
@@ -94,6 +95,9 @@ namespace Site
 			_repo = TryResolve<InternsRepository>();
 		}
 
+		[EnableCors]
+		public void Options(InternsQuery request) { }
+
 		[DefaultView("Interns")]
 		public List<Intern> Get(InternsQuery request)
 		{
@@ -103,14 +107,13 @@ namespace Site
 		[DefaultView("Intern")]
 		public Intern Get(ViewIntern request)
 		{
-			var model = _repo.Get(request.Id);
-			return model;
+			return _repo.Get(request.Id);
 		}
 
 		public HttpResult Post(Intern model)
 		{
 			_repo.Save(model);
-			return this.Created(model, "/interns/" + model.Id);
+			return this.Created(model, "/interns");
 		}
 	};
 }
