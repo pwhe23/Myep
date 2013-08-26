@@ -93,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App-Code\Bootstrap.cs" />
+    <Compile Include="App-Code\Extensions.cs" />
+    <Compile Include="App-Code\Interns.cs" />
+    <Compile Include="App-Code\Employers.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -102,6 +105,8 @@
     <Content Include="packages.config" />
     <Content Include="Default.cshtml" />
     <Content Include="Views\_Layout.cshtml" />
+    <Content Include="Views\Interns.cshtml" />
+    <Content Include="Views\Intern.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

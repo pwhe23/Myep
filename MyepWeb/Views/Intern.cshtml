@@ -1,0 +1,23 @@
+﻿@inherits ViewPage<Intern>
+@{
+	ViewBag.Title = "Edit Intern";
+}
+
+<form method='post'>
+	<table>
+		<tr>
+			<th>Id</th>
+			<td>@Model.Id</td>
+		</tr>
+		<tr>
+			<th>FirstName</th>
+			<td>@Html.TextBox("FirstName", Model.FirstName)</td>
+		</tr>
+		<tr>
+			<th>LastName</th>
+			<td>@Html.TextBox("LastName", Model.LastName)</td>
+		</tr>
+	</table>
+	<input type='submit' value='Save Intern' />
+	<input type='button' value='Back to List' onclick='window.location="/interns"'/>
+</form>

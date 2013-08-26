@@ -24,7 +24,14 @@ namespace Site
 			ConfigurePlugins(Plugins);
 			ConfigureRoutes(SetConfig);
 			ConfigureDatabase(container);
+			ConfigureContainer(container);
+			CreateDatabase(container);
 			//AddAuthentication(container, Plugins);
+		}
+
+		private static void ConfigureContainer(Container container)
+		{
+			container.RegisterAutoWired<InternsRepository>().ReusedWithin(ReuseScope.None); 
 		}
 
 		private static void ConfigureLogging()
@@ -55,6 +62,16 @@ namespace Site
 			container.Register<IDbConnectionFactory>(
 				new OrmLiteConnectionFactory(cs, true, SqlServerDialect.Provider)
 			);
+		}
+
+		private static void CreateDatabase(Container container)
+		{
+			using (var db = container.Resolve<IDbConnectionFactory>().OpenDbConnection())
+			{
+				db.CreateTableIfNotExists<Intern>();
+				db.CreateTableIfNotExists<Employer>();
+				//db.InsertAll(SeedRockstars);
+			}
 		}
 
 		private static void AddAuthentication(Container container, List<IPlugin> plugins)

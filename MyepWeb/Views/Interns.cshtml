@@ -1,0 +1,28 @@
+﻿@inherits ViewPage<List<Intern>>
+@{
+	ViewBag.Title = "Interns List";
+}
+
+<div>
+	<a href='/interns/0'>Add Intern</a>
+</div>
+			  
+<table border='1'>
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>FirstName</th>
+			<th>LastName</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var m in Model)
+		{
+			<tr>
+				<td>@m.Id</td>
+				<td>@m.FirstName</td>
+				<td>@m.LastName</td>
+			</tr>
+		}
+	</tbody>
+</table>
