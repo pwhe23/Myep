@@ -1,17 +1,11 @@
-﻿@inherits ViewPage<Employer>
+﻿@model Employer
 @{
 	ViewBag.Title = "Edit Employer";
 }
 
 <form method='post' role='form' class='form-horizontal'>
-	<div class='form-group'>
-		<label class='col-lg-2 control-label'>Id</label>
-		<div class='col-lg-10'><span class='form-control'>@Model.Id</span></div>
-	</div>
-	<div class='form-group'>
-		<label for='CompanyName' class='col-lg-2 control-label'>Company Name</label>
-		<div class='col-lg-10'>@Html.TextBox("CompanyName", Model.CompanyName, new { @class = "form-control", placeholder = "Company Name" })</div>
-	</div>
+	@Editor(Html.Metadata(x => x.Id, "Id"))
+	@Editor(Html.Metadata(x => x.Organization, "Organization"))
 	<div class='form-group'>
 		<div class='col-lg-offset-2 col-lg-10'>
 			<button type='submit' class='btn btn-primary'><span class='glyphicon glyphicon-floppy-disk'></span> Save Employer</button>
@@ -19,3 +13,10 @@
 		</div>
 	</div>
 </form>
+
+@helper Editor(ModelMetadata metadata, object attrs = null) {
+	<div class='form-group'>
+		<label for='@metadata.PropertyName' class='col-lg-2 control-label'>@metadata.DisplayName</label>
+		<div class='col-lg-10'>@Html.Editor(metadata, new RouteValueDictionary(attrs).Set("class", "form-control"))</div>
+	</div>
+}

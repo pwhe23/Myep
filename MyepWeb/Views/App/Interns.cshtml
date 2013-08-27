@@ -1,10 +1,10 @@
-﻿@inherits ViewPage<List<Intern>>
+﻿@model List<Intern>
 @{
 	ViewBag.Title = "Interns List";
 }
 
 <div>
-	<a href='/interns/0' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span> Add Intern</a>
+	<a href='/intern' class='btn btn-primary'><span class='glyphicon glyphicon-plus'></span> Add Intern</a>
 </div>
 
 <div class="table-responsive">
@@ -20,7 +20,7 @@
 			@foreach (var m in Model)
 			{
 				<tr>
-					<td><a href='/interns/@m.Id'>@m.Id</a></td>
+					<td><a href='/intern/@m.Id'>@m.Id</a></td>
 					<td>@m.FirstName</td>
 					<td>@m.LastName</td>
 				</tr>
