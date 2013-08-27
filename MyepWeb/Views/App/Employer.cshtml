@@ -6,6 +6,17 @@
 <form method='post' role='form' class='form-horizontal'>
 	@Editor(Html.Metadata(x => x.Id, "Id"))
 	@Editor(Html.Metadata(x => x.Organization, "Organization"))
+	@Editor(Html.Metadata(x => x.Address, "Address"))
+	@Editor(Html.Metadata(x => x.City, "City"))
+	@Editor(Html.Metadata(x => x.State, "State"))
+	@Editor(Html.Metadata(x => x.Zip, "Zip"))
+	@Editor(Html.Metadata(x => x.Phone, "Phone"))
+	@Editor(Html.Metadata(x => x.Phone2, "Phone (alt)"))
+	@Editor(Html.Metadata(x => x.Email, "Email"))
+	@Editor(Html.Metadata(x => x.ContactFirstName, "Contact First name"))
+	@Editor(Html.Metadata(x => x.ContactLastName, "Contact Last name"))
+	@Editor(Html.Metadata(x => x.ContactTitle, "Contact Title"))
+	@Editor(Html.Metadata(x => x.Positions, "# Positions Available"))
 	<div class='form-group'>
 		<div class='col-lg-offset-2 col-lg-10'>
 			<button type='submit' class='btn btn-primary'><span class='glyphicon glyphicon-floppy-disk'></span> Save Employer</button>

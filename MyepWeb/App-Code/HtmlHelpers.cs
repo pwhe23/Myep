@@ -31,6 +31,10 @@ namespace Site
 			{
 				return htmlHelper.ReadOnly(metadata.Model, htmlAttributes);
 			}
+			else if (metadata.ModelType == typeof(bool?))
+			{
+				return htmlHelper.CheckBox(metadata.PropertyName, (bool?)metadata.Model == true, htmlAttributes);
+			}
 			else
 			{
 				return htmlHelper.TextBox(metadata.PropertyName, metadata.Model, htmlAttributes);
