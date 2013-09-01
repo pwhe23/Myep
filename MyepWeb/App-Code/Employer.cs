@@ -42,6 +42,8 @@ namespace Site
 		public int EmployerId { get; set; }
 		public string Organization { get; set; }
 		public string ContactName { get; set; }
+		public int Available { get; set; }
+		public int Filled { get; set; }
 	};
 
 	/// <summary> Persist Employers to the database </summary>
@@ -73,7 +75,8 @@ namespace Site
 			using (var db = _db.OpenDbConnection())
 			{
 				return db.Select<EmployerInfo>(@"
-					SELECT Employer.Id AS EmployerId, Organization, ContactFirstName+' '+ContactLastName AS ContactName
+					SELECT Employer.Id AS EmployerId, Organization, ContactFirstName+' '+ContactLastName AS ContactName, ISNULL(Positions,0) AS Available,
+						(SELECT COUNT(*) FROM Intern WHERE EmployerId=Employer.Id) AS Filled
 					FROM Employer
 					WHERE (" + string.Join(") AND (", where) + ")"
 				);
