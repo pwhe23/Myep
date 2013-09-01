@@ -1,5 +1,4 @@
 ﻿
-using System;
 using System.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -7,12 +6,21 @@ using Funq;
 using ServiceStack.Logging;
 using ServiceStack.Logging.Support.Logging;
 using ServiceStack.OrmLite;
-using ServiceStack.WebHost.Endpoints;
 
 namespace Site
 {
 	public static class Configuration
 	{
+		public static void Initialize()
+		{
+			var container = Ioc.Init();
+			ConfigureLogging();
+			ConfigureRoutes(RouteTable.Routes);
+			ConfigureDatabase(container);
+			ConfigureContainer(container);
+			CreateDatabase(container);
+		}
+
 		public static void ConfigureLogging()
 		{
 			LogManager.LogFactory = new DebugLogFactory();
@@ -35,17 +43,6 @@ namespace Site
 			);
 		}
 
-		public static void ConfigureRoutes(Action<EndpointHostConfig> setConfig)
-		{
-			setConfig(new EndpointHostConfig
-			{
-				GlobalResponseHeaders = {
-					{ "Access-Control-Allow-Origin", "*" },
-					{ "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS" },
-				},
-			});
-		}
-
 		public static void ConfigureDatabase(Container container)
 		{
 			var cs = ConfigurationManager.ConnectionStrings["SiteDb"].ConnectionString;
@@ -66,25 +63,24 @@ namespace Site
 		}
 	};
 
-	public class AppHost : AppHostBase
-	{
-		public AppHost() : base("Myep", typeof(AppHost).Assembly) { }
-
-		public override void Configure(Container container)
-		{
-			Configuration.ConfigureLogging();
-			Configuration.ConfigureRoutes(SetConfig);
-			Configuration.ConfigureDatabase(container);
-			Configuration.ConfigureContainer(container);
-			Configuration.CreateDatabase(container);
-		}
-	};
-
 	public static class Ioc
 	{
+		private static Container _container;
+
+		public static Container Init()
+		{
+			_container = new Container();
+			return _container;
+		}
+
 		public static T Get<T>()
 		{
-			return EndpointHost.AppHost.TryResolve<T>();
+			return _container.TryResolve<T>();
+		}
+
+		public static void Dispose()
+		{
+			if (_container != null) _container.Dispose();
 		}
 	};
 }
