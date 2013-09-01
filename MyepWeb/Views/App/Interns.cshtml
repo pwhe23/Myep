@@ -1,4 +1,4 @@
-﻿@model List<Intern>
+﻿@model List<InternInfo>
 @{
 	ViewBag.Title = "Interns List";
 }
@@ -12,17 +12,17 @@
 		<thead>
 			<tr>
 				<th>Id</th>
-				<th>FirstName</th>
-				<th>LastName</th>
+				<th>Name</th>
+				<th>Employer</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var m in Model)
 			{
 				<tr>
-					<td><a href='/intern/@m.Id'>@m.Id</a></td>
-					<td>@m.FirstName</td>
-					<td>@m.LastName</td>
+					<td><a href='/intern/@m.InternId'>@m.InternId</a></td>
+					<td>@m.FullName</td>
+					<td>@m.Organization</td>
 				</tr>
 			}
 		</tbody>

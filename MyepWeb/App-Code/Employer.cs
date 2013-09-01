@@ -24,6 +24,24 @@ namespace Site
 		public string Email { get; set; }
 		public int? Positions { get; set; }
 		public DateTime? AgreementDate { get; set; }
+
+		public override string ToString()
+		{
+			return Organization;
+		}
+
+		public static Employer Get(int? id)
+		{
+			var repo = Ioc.Get<EmployersRepository>();
+			return repo.Get(id);
+		}
+	};
+
+	public class EmployerInfo
+	{
+		public int EmployerId { get; set; }
+		public string Organization { get; set; }
+		public string ContactName { get; set; }
 	};
 
 	/// <summary> Persist Employers to the database </summary>
@@ -44,11 +62,21 @@ namespace Site
 			}
 		}
 
-		public List<Employer> Query()
+		public List<EmployerInfo> Query(int? employerId)
 		{
+			var where = new List<string> { "1=1" };
+			if (employerId != null)
+			{
+				where.Add("[Id]=" + employerId.Value);
+			}
+
 			using (var db = _db.OpenDbConnection())
 			{
-				return db.Select<Employer>();
+				return db.Select<EmployerInfo>(@"
+					SELECT Employer.Id AS EmployerId, Organization, ContactFirstName+' '+ContactLastName AS ContactName
+					FROM Employer
+					WHERE (" + string.Join(") AND (", where) + ")"
+				);
 			}
 		}
 

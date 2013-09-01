@@ -22,13 +22,14 @@ namespace Site
 
 		public ActionResult Employers()
 		{
-			var model = _employersRepo.Query();
+			var model = _employersRepo.Query(null);
 			return View(model);
 		}
 
 		public ActionResult Employer(int? id)
 		{
 			var model = _employersRepo.Get(id);
+			ViewBag.Interns = _internsRepo.Query(null, model.Id);
 			return View(model);
 		}
 
@@ -41,7 +42,7 @@ namespace Site
 
 		public ActionResult Interns()
 		{
-			var model = _internsRepo.Query();
+			var model = _internsRepo.Query(null, null);
 			return View(model);
 		}
 
@@ -56,6 +57,31 @@ namespace Site
 		{
 			_internsRepo.Save(model);
 			return RedirectToAction("Interns");
+		}
+
+		public ActionResult Assign(int? id)
+		{
+			var model = _internsRepo.GetAssignment(id);
+			return View("Assign", model);
+		}
+
+		[AcceptVerbs(HttpVerbs.Post)]
+		public ActionResult Assign(int id, int employerId)
+		{
+			_internsRepo.Assign(id, employerId);
+			return RedirectToAction("Intern", new{ id });
+		}
+
+		[AcceptVerbs(HttpVerbs.Post)]
+		public ActionResult Unassign(int? id, int? internId)
+		{
+			_internsRepo.Assign(internId ?? id ?? 0, null);
+
+			if (internId.HasValue)
+				return RedirectToAction("Employer", new { id });
+			else if (id.HasValue)
+				return RedirectToAction("Intern", new { id });
+			return Content("Can't assign");
 		}
 
 		public ActionResult Reset()

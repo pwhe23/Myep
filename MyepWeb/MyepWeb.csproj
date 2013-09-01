@@ -125,6 +125,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App-Code\Assignment.cs" />
     <Compile Include="App-Code\Configuration.cs" />
     <Compile Include="App-Code\Controller.cs" />
     <Compile Include="App-Code\Extensions.cs" />
@@ -137,9 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="Views\App\Index.cshtml">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    <Content Include="Views\App\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\App\Interns.cshtml" />
     <Content Include="Views\App\Intern.cshtml" />
@@ -149,6 +148,7 @@
     <Content Include="Views\App\Employers.cshtml" />
     <Content Include="Views\App\Employer.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\App\Assign.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

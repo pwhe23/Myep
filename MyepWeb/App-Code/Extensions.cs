@@ -117,17 +117,18 @@ namespace Site
 			return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.Normal));
 		}
 
-		public static ModelMetadata Metadata<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string displayName = null)
+		public static ModelMetadata Metadata<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string displayName = null, bool? isReadOnly = null)
 		{
 			var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
 			if (displayName != null) metadata.DisplayName = displayName;
+			if (isReadOnly.HasValue) metadata.IsReadOnly = isReadOnly.Value;
 			return metadata;
 		}
 
 		public static MvcHtmlString Editor<TModel>(this HtmlHelper<TModel> htmlHelper, ModelMetadata metadata, IDictionary<string, object> htmlAttributes = null)
 		{
 			//.Set("placeholder", metadata.DisplayName)
-			if (metadata.PropertyName == "Id")
+			if (metadata.PropertyName == "Id" || metadata.IsReadOnly)
 			{
 				return htmlHelper.ReadOnly(metadata.Model, htmlAttributes);
 			}
@@ -139,6 +140,11 @@ namespace Site
 			{
 				return htmlHelper.TextBox(metadata.PropertyName, metadata.Model, htmlAttributes);
 			}
+		}
+
+		public static T Get<T>(this ViewDataDictionary viewData, string name)
+		{
+			return (T) viewData[name];
 		}
 	};
 }

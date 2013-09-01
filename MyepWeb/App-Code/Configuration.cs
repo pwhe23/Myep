@@ -5,6 +5,8 @@ using System.Web.Routing;
 using Funq;
 using ServiceStack.Logging;
 using ServiceStack.Logging.Support.Logging;
+using ServiceStack.MiniProfiler;
+using ServiceStack.MiniProfiler.Data;
 using ServiceStack.OrmLite;
 
 namespace Site
@@ -48,7 +50,9 @@ namespace Site
 			var cs = ConfigurationManager.ConnectionStrings["SiteDb"].ConnectionString;
 
 			container.Register<IDbConnectionFactory>(
-				new OrmLiteConnectionFactory(cs, true, SqlServerDialect.Provider)
+				new OrmLiteConnectionFactory(cs, true, SqlServerDialect.Provider) {
+					ConnectionFilter = x => new ProfiledDbConnection(x, Profiler.Current)
+				}
 			);
 		}
 
