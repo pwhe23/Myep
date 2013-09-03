@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ServiceStack.DataAnnotations;
 using ServiceStack.OrmLite;
 
@@ -42,7 +43,20 @@ namespace Site
 		{
 			get { return FirstName + " " + LastName; }
 		}
+
+		public override string ToString()
+		{
+			return FullName;
+		}
 	};
+
+	public class InternInfo
+	{
+		public int InternId { get; set; }
+		public string FullName { get; set; }
+		public int? EmployerId { get; set; }
+		public string Organization { get; set; }
+	}
 
 	/// <summary> Persist Interns to the database </summary>
 	public class InternsRepository
@@ -62,11 +76,20 @@ namespace Site
 			}
 		}
 
-		public List<Intern> Query()
+		public List<InternInfo> Query(int? internId, int? employerId)
 		{
+			var where = new List<string> {"1=1"};
+			if (internId != null) where.Add("Intern.Id=" + internId);
+			if (employerId.HasValue) where.Add("EmployerId=" + employerId);
+
 			using (var db = _db.OpenDbConnection())
 			{
-				return db.Select<Intern>();
+				return db.Select<InternInfo>(@"
+					SELECT Intern.Id AS InternId, FirstName+' '+LastName AS FullName, EmployerId, Organization 
+					FROM Intern
+					LEFT JOIN Employer ON Intern.EmployerId = Employer.Id
+					WHERE (" + string.Join(") AND (", where) + ")"
+				);
 			}
 		}
 
@@ -79,12 +102,42 @@ namespace Site
 			}
 		}
 
+		public Assignment GetAssignment(int? internId)
+		{
+			var assignment = new Assignment();
+			var repo = Ioc.Get<EmployersRepository>();
+			var intern = Query(internId ?? 0, null).SingleOrDefault();
+			var employer = repo.Query(assignment.EmployerId ?? 0).SingleOrDefault();
+
+			if (intern != null)
+			{
+				assignment.InternName = intern.FullName;
+				assignment.EmployerId = intern.EmployerId;
+			}
+
+			if (employer != null)
+			{
+				assignment.Organization = employer.Organization;
+			}
+
+			assignment.Employers = repo.Query(null);
+
+			return assignment;
+		}
+
 		public Intern Get(int? id)
 		{
 			using (var db = _db.OpenDbConnection())
 			{
 				return db.GetByIdOrDefault<Intern>(id) ?? new Intern();
 			}
+		}
+
+		public void Assign(int internId, int? employerId)
+		{
+			var intern = Get(internId);
+			intern.EmployerId = employerId;
+			Save(intern);
 		}
 	};
 }

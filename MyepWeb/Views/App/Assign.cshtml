@@ -1,0 +1,43 @@
+﻿@model Assignment
+@{
+    ViewBag.Title = "Assign Intern";
+}
+
+<div class='form-horizontal'>
+	@Editor(Html.Metadata(x => x.InternName, "Intern", true))
+	@Editor(Html.Metadata(x => x.Organization, "Employer", true))
+</div>
+
+<form method='post' role='form'>
+	<h3>Select Employer</h3>
+	<div class="table-responsive">
+		<table class='table table-condensed table-striped table-hover'>
+			<thead>
+				<tr>
+					<th>Assign</th>
+					<th>Id</th>
+					<th>Organization</th>
+					<th>Contact</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var m in Model.Employers)
+				{
+					<tr>
+						<td><button type='submit' name='EmployerId' value='@m.EmployerId' class='btn btn-xs btn-default'>Assign</button></td>
+						<td><a href='/employer/@m.EmployerId' target='_blank'>@m.EmployerId</a></td>
+						<td>@m.Organization</td>
+						<td>@m.ContactName</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</form>
+
+@helper Editor(ModelMetadata metadata, object attrs = null) {
+	<div class='form-group'>
+		<label for='@metadata.PropertyName' class='col-lg-2 control-label'>@metadata.DisplayName</label>
+		<div class='col-lg-10'>@Html.Editor(metadata, new RouteValueDictionary(attrs).Set("class", "form-control"))</div>
+	</div>
+}

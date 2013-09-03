@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Web.Routing;
 using ServiceStack.MiniProfiler;
 
 namespace Site
@@ -10,8 +9,7 @@ namespace Site
 
 		protected void Application_Start(object sender, EventArgs e)
 		{
-			new AppHost().Init();
-			Configuration.ConfigureRoutes(RouteTable.Routes);
+			Configuration.Initialize();
 		}
 
 		protected void Session_Start(object sender, EventArgs e)

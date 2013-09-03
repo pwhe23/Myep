@@ -25,6 +25,33 @@
 	</div>
 </form>
 
+<form method='post' role='form' action='/unassign/@Model.Id'>
+	<hr/>
+	<h3>Interns</h3>
+	<div>Filled <b>@ViewBag.Interns.Count</b> of <b>@(Model.Positions??0)</b> desired positions</div>
+	<div class="table-responsive">
+		<table class='table table-condensed table-striped table-hover'>
+			<thead>
+				<tr>
+					<th>Unassign</th>
+					<th>Id</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var m in ViewData.Get<List<InternInfo>>("Interns"))
+				{
+					<tr>
+						<td><button type='submit' name='InternId' value='@m.InternId' class='btn btn-xs btn-default'>Unassign</button></td>
+						<td><a href='/intern/@m.InternId' target='_blank'>@m.InternId</a></td>
+						<td>@m.FullName</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</form>
+
 @helper Editor(ModelMetadata metadata, object attrs = null) {
 	<div class='form-group'>
 		<label for='@metadata.PropertyName' class='col-lg-2 control-label'>@metadata.DisplayName</label>

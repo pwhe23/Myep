@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
+using System.Linq.Expressions;
 using System.Web.Mvc;
-using ServiceStack.Common.Web;
+using System.Web.Mvc.Html;
 using ServiceStack.Logging;
 using ServiceStack.OrmLite;
-using ServiceStack.ServiceInterface;
 
 namespace Site
 {
@@ -24,18 +23,7 @@ namespace Site
 			dict[key] = value;
 			return dict;
 		}
-
-		public static HttpResult Created(this Service service, Object model, string location)
-		{
-			return new HttpResult(model)
-			{
-				StatusCode = HttpStatusCode.Redirect,
-				Headers = {
-					{ HttpHeaders.Location, location }
-				}
-			};
-		}
-		
+	
 		//REF: http://stackoverflow.com/a/15688756/366559
 		public static void AlterTable<T>(this IDbConnection db) where T : new()
 		{
@@ -119,6 +107,44 @@ namespace Site
 			var flag = ((includeProperties == null) || (includeProperties.Length == 0)) || includeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
 			var flag2 = (excludeProperties != null) && excludeProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
 			return (flag && !flag2);
+		}
+
+		public static MvcHtmlString ReadOnly(this HtmlHelper htmlHelper, object value, IDictionary<string, object> htmlAttributes = null)
+		{
+			var tagBuilder = new TagBuilder("span");
+			tagBuilder.MergeAttributes(htmlAttributes);
+			tagBuilder.SetInnerText(value.Or());
+			return MvcHtmlString.Create(tagBuilder.ToString(TagRenderMode.Normal));
+		}
+
+		public static ModelMetadata Metadata<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string displayName = null, bool? isReadOnly = null)
+		{
+			var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+			if (displayName != null) metadata.DisplayName = displayName;
+			if (isReadOnly.HasValue) metadata.IsReadOnly = isReadOnly.Value;
+			return metadata;
+		}
+
+		public static MvcHtmlString Editor<TModel>(this HtmlHelper<TModel> htmlHelper, ModelMetadata metadata, IDictionary<string, object> htmlAttributes = null)
+		{
+			//.Set("placeholder", metadata.DisplayName)
+			if (metadata.PropertyName == "Id" || metadata.IsReadOnly)
+			{
+				return htmlHelper.ReadOnly(metadata.Model, htmlAttributes);
+			}
+			else if (metadata.ModelType == typeof(bool?))
+			{
+				return htmlHelper.CheckBox(metadata.PropertyName, (bool?)metadata.Model == true, htmlAttributes);
+			}
+			else
+			{
+				return htmlHelper.TextBox(metadata.PropertyName, metadata.Model, htmlAttributes);
+			}
+		}
+
+		public static T Get<T>(this ViewDataDictionary viewData, string name)
+		{
+			return (T) viewData[name];
 		}
 	};
 }

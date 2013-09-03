@@ -1,4 +1,4 @@
-﻿@model List<Employer>
+﻿@model List<EmployerInfo>
 @{
 	ViewBag.Title = "Employers List";
 }
@@ -14,15 +14,17 @@
 				<th>Id</th>
 				<th>Organization</th>
 				<th>Contact</th>
+				<th>Positions</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var m in Model)
 			{
 				<tr>
-					<td><a href='/employer/@m.Id'>@m.Id</a></td>
+					<td><a href='/employer/@m.EmployerId'>@m.EmployerId</a></td>
 					<td>@m.Organization</td>
-					<td>@m.ContactFirstName @m.ContactLastName</td>
+					<td>@m.ContactName</td>
+					<td>@(m.Filled + "/" + m.Available)</td>
 				</tr>
 			}
 		</tbody>
