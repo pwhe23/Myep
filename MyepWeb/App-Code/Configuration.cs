@@ -19,20 +19,13 @@ namespace Site
 			ConfigureLogging();
 			ConfigureRoutes(RouteTable.Routes);
 			ConfigureDatabase(container);
-			ConfigureContainer(container);
-			CreateDatabase(container);
+			Database.Configure(container);
+			Database.Create(container);
 		}
 
 		public static void ConfigureLogging()
 		{
 			LogManager.LogFactory = new DebugLogFactory();
-		}
-
-		public static void ConfigureContainer(Container container)
-		{
-			container.RegisterAutoWired<EmployersRepository>().ReusedWithin(ReuseScope.None);
-			container.RegisterAutoWired<InternsRepository>().ReusedWithin(ReuseScope.None);
-			container.RegisterAutoWired<UserRepository>().ReusedWithin(ReuseScope.None);
 		}
 
 		public static void ConfigureRoutes(RouteCollection routes)
@@ -51,21 +44,11 @@ namespace Site
 			var cs = ConfigurationManager.ConnectionStrings["SiteDb"].ConnectionString;
 
 			container.Register<IDbConnectionFactory>(
-				new OrmLiteConnectionFactory(cs, true, SqlServerDialect.Provider) {
+				new OrmLiteConnectionFactory(cs, true, SqlServerDialect.Provider)
+				{
 					ConnectionFilter = x => new ProfiledDbConnection(x, Profiler.Current)
 				}
 			);
-		}
-
-		public static void CreateDatabase(Container container)
-		{
-			using (var db = container.Resolve<IDbConnectionFactory>().OpenDbConnection())
-			{
-				db.AlterTable<Employer>();
-				db.AlterTable<Intern>();
-				db.AlterTable<User>();
-				//db.InsertAll(SeedRockstars);
-			}
 		}
 	};
 

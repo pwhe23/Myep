@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Security;
 using ServiceStack.DataAnnotations;
-using ServiceStack.OrmLite;
 
 namespace Site
 {
@@ -26,15 +25,8 @@ namespace Site
 		public string Email { get; set; }
 	}
 
-	public class UserRepository
+	public class UserRepository : Repository
 	{
-		readonly IDbConnectionFactory _db;
-
-		public UserRepository(IDbConnectionFactory db)
-		{
-			_db = db;
-		}
-
 		public List<UserInfo> Query(int? userId)
 		{
 			var where = new List<string> { "1=1" };
@@ -43,39 +35,26 @@ namespace Site
 				where.Add("[Id]=" + userId.Value);
 			}
 
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.Select<UserInfo>(@"
-					SELECT [Users].Id AS UserId, Email
-					FROM [Users]
-					WHERE (" + string.Join(") AND (", where) + ")"
-				);
-			}
+			return base.List<UserInfo>(@"
+				SELECT [Users].Id AS UserId, Email
+				FROM [Users]
+				WHERE (" + string.Join(") AND (", where) + ")"
+			);
 		}
 
 		public User Get(string email)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.SingleOrDefault<User>("SELECT * FROM [Users] WHERE [Email]={0}", email);
-			}
+			return base.SingleOrDefault<User>("SELECT * FROM [Users] WHERE [Email]={0}", email);
 		}
 
 		public User Get(int? id)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.GetByIdOrDefault<User>(id) ?? new User();
-			}
+			return base.SingleOrDefault<User>(id) ?? new User();
 		}
 
 		public void Save(User model)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				db.Save(model);
-				model.Id = (int)db.GetLastInsertId();
-			}
+			model.Id = base.Save(model);
 		}
 
 		public bool Login(string email, string password, bool remember)

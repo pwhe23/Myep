@@ -62,47 +62,25 @@ namespace Site
 	}
 
 	/// <summary> Persist Interns to the database </summary>
-	public class InternsRepository
+	public class InternsRepository : Repository
 	{
-		private readonly IDbConnectionFactory _db;
-
-		public InternsRepository(IDbConnectionFactory db)
-		{
-			_db = db;
-		}
-
-		public int Count()
-		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.Scalar<int>("SELECT COUNT(*) FROM [Intern]");
-			}
-		}
-
 		public List<InternInfo> Query(int? internId, int? employerId)
 		{
 			var where = new List<string> {"1=1"};
 			if (internId != null) where.Add("Intern.Id=" + internId);
 			if (employerId.HasValue) where.Add("EmployerId=" + employerId);
 
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.Select<InternInfo>(@"
-					SELECT Intern.Id AS InternId, FirstName+' '+LastName AS FullName, EmployerId, Organization 
-					FROM Intern
-					LEFT JOIN Employer ON Intern.EmployerId = Employer.Id
-					WHERE (" + string.Join(") AND (", where) + ")"
-				);
-			}
+			return base.List<InternInfo>(@"
+				SELECT Intern.Id AS InternId, FirstName+' '+LastName AS FullName, EmployerId, Organization 
+				FROM Intern
+				LEFT JOIN Employer ON Intern.EmployerId = Employer.Id
+				WHERE (" + string.Join(") AND (", where) + ")"
+			);
 		}
 
 		public void Save(Intern model)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				db.Save(model);
-				model.Id = (int)db.GetLastInsertId();
-			}
+			model.Id = base.Save(model);
 		}
 
 		public Assignment GetAssignment(int? internId)
@@ -130,10 +108,7 @@ namespace Site
 
 		public Intern Get(int? id)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.GetByIdOrDefault<Intern>(id) ?? new Intern();
-			}
+			return base.SingleOrDefault<Intern>(id) ?? new Intern();
 		}
 
 		public void Assign(int internId, int? employerId)

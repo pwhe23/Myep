@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ServiceStack.DataAnnotations;
-using ServiceStack.OrmLite;
 
 namespace Site
 {
@@ -49,23 +48,8 @@ namespace Site
 	};
 
 	/// <summary> Persist Employers to the database </summary>
-	public class EmployersRepository
+	public class EmployersRepository : Repository
 	{
-		private readonly IDbConnectionFactory _db;
-
-		public EmployersRepository(IDbConnectionFactory db)
-		{
-			_db = db;
-		}
-
-		public int Count()
-		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.Scalar<int>("SELECT COUNT(*) FROM [Employer]");
-			}
-		}
-
 		public List<EmployerInfo> Query(int? employerId)
 		{
 			var where = new List<string> { "1=1" };
@@ -74,32 +58,22 @@ namespace Site
 				where.Add("[Id]=" + employerId.Value);
 			}
 
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.Select<EmployerInfo>(@"
-					SELECT Employer.Id AS EmployerId, Organization, ContactFirstName+' '+ContactLastName AS ContactName, ISNULL(Positions,0) AS Available,
-						(SELECT COUNT(*) FROM Intern WHERE EmployerId=Employer.Id) AS Filled
-					FROM Employer
-					WHERE (" + string.Join(") AND (", where) + ")"
-				);
-			}
+			return base.List<EmployerInfo>(@"
+				SELECT Employer.Id AS EmployerId, Organization, ContactFirstName+' '+ContactLastName AS ContactName, ISNULL(Positions,0) AS Available,
+					(SELECT COUNT(*) FROM Intern WHERE EmployerId=Employer.Id) AS Filled
+				FROM Employer
+				WHERE (" + string.Join(") AND (", where) + ")"
+			);
 		}
 
 		public Employer Get(int? id)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.GetByIdOrDefault<Employer>(id) ?? new Employer();
-			}
+			return base.SingleOrDefault<Employer>(id) ?? new Employer();
 		}
 
 		public void Save(Employer model)
 		{
-			using (var db = _db.OpenDbConnection())
-			{
-				db.Save(model);
-				model.Id = (int)db.GetLastInsertId();
-			}
+			model.Id = base.Save(model);
 		}
 	};
 }
