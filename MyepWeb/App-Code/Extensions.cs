@@ -137,6 +137,10 @@ namespace Site
 			{
 				return htmlHelper.CheckBox(metadata.PropertyName, (bool?)metadata.Model == true, htmlAttributes);
 			}
+			else if (metadata.PropertyName == "Password")
+			{
+				return htmlHelper.Password(metadata.PropertyName, metadata.Model, htmlAttributes);
+			}
 			else
 			{
 				return htmlHelper.TextBox(metadata.PropertyName, metadata.Model, htmlAttributes);

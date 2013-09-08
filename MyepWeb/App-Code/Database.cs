@@ -22,6 +22,11 @@ namespace Site
 				db.AlterTable<Intern>();
 				db.AlterTable<User>();
 			}
+
+			//verify admin user
+			var repo = new UserRepository();
+			var admin = repo.Get("paul@tagovi.com");
+			if (admin == null) repo.Save(new User {Email = "paul@tagovi.com", Password = "test"});
 		}
 	};
 
