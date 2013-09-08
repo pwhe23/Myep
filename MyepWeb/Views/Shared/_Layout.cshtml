@@ -35,5 +35,13 @@
 			@RenderBody()
 		</div>
 	</div>
+	<footer id="footer" class='navbar navbar-fixed-bottom'>
+		<div class='container'>
+			@if (Request.IsAuthenticated)
+			{
+				<div><a href='/logout'>Logout @User.Identity.Name</a></div>
+			}
+		</div>
+	</footer>
 </body>
 </html>

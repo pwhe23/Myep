@@ -1,18 +1,22 @@
 ﻿
+using System;
 using System.Web.Mvc;
 using ServiceStack.OrmLite;
 
 namespace Site
 {
+	[Authorize]
 	public class AppController : Controller
 	{
 		private readonly InternsRepository _internsRepo;
 		private readonly EmployersRepository _employersRepo;
+		private readonly UserRepository _userRepository;
 
 		public AppController()
 		{
 			_internsRepo = Ioc.Get<InternsRepository>();
 			_employersRepo = Ioc.Get<EmployersRepository>();
+			_userRepository = Ioc.Get<UserRepository>();
 		}
 
 		public ActionResult Index()
@@ -82,6 +86,48 @@ namespace Site
 			else if (id.HasValue)
 				return RedirectToAction("Intern", new { id });
 			return Content("Can't assign");
+		}
+
+		public ActionResult Users()
+		{
+			var model = _userRepository.Query(null);
+			return View(model);
+		}
+
+		public new ActionResult User(int? id)
+		{
+			var model = _userRepository.Get(id);
+			return View(model);
+		}
+
+		[AcceptVerbs(HttpVerbs.Post)]
+		public new ActionResult User(User model)
+		{
+			_userRepository.Save(model);
+			return RedirectToAction("Users");
+		}
+
+		[AllowAnonymous]
+		public ActionResult Login()
+		{
+			var user = new User();
+			return View(user);
+		}
+
+		[AllowAnonymous, AcceptVerbs(HttpVerbs.Post)]
+		public ActionResult Login(User user)
+		{
+			if (!_userRepository.Login(user.Email, user.Password, true))
+			{
+				throw new Exception("Invalid login");
+			}
+			return RedirectToAction("Index");
+		}
+
+		public ActionResult Logout()
+		{
+			_userRepository.Logout();
+			return Redirect(Request.UrlReferrer == null ? "/" : Request.UrlReferrer.ToString());
 		}
 
 		public ActionResult Reset()

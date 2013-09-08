@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using ServiceStack.DataAnnotations;
 using ServiceStack.OrmLite;
 
@@ -11,6 +12,7 @@ namespace Site
 	{
 		[AutoIncrement]
 		public int Id { get; set; }
+		[Required]
 		public string Organization { get; set; }
 		public string ContactTitle { get; set; }
 		public string ContactFirstName { get; set; }
@@ -83,20 +85,20 @@ namespace Site
 			}
 		}
 
+		public Employer Get(int? id)
+		{
+			using (var db = _db.OpenDbConnection())
+			{
+				return db.GetByIdOrDefault<Employer>(id) ?? new Employer();
+			}
+		}
+
 		public void Save(Employer model)
 		{
 			using (var db = _db.OpenDbConnection())
 			{
 				db.Save(model);
 				model.Id = (int)db.GetLastInsertId();
-			}
-		}
-
-		public Employer Get(int? id)
-		{
-			using (var db = _db.OpenDbConnection())
-			{
-				return db.GetByIdOrDefault<Employer>(id) ?? new Employer();
 			}
 		}
 	};

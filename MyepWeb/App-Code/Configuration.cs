@@ -32,6 +32,7 @@ namespace Site
 		{
 			container.RegisterAutoWired<EmployersRepository>().ReusedWithin(ReuseScope.None);
 			container.RegisterAutoWired<InternsRepository>().ReusedWithin(ReuseScope.None);
+			container.RegisterAutoWired<UserRepository>().ReusedWithin(ReuseScope.None);
 		}
 
 		public static void ConfigureRoutes(RouteCollection routes)
@@ -62,6 +63,7 @@ namespace Site
 			{
 				db.AlterTable<Employer>();
 				db.AlterTable<Intern>();
+				db.AlterTable<User>();
 				//db.InsertAll(SeedRockstars);
 			}
 		}

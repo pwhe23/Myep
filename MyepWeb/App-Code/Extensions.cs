@@ -120,6 +120,7 @@ namespace Site
 		public static ModelMetadata Metadata<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string displayName = null, bool? isReadOnly = null)
 		{
 			var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
+			if (metadata.PropertyName == "Id") metadata.IsReadOnly = true;
 			if (displayName != null) metadata.DisplayName = displayName;
 			if (isReadOnly.HasValue) metadata.IsReadOnly = isReadOnly.Value;
 			return metadata;
@@ -128,7 +129,7 @@ namespace Site
 		public static MvcHtmlString Editor<TModel>(this HtmlHelper<TModel> htmlHelper, ModelMetadata metadata, IDictionary<string, object> htmlAttributes = null)
 		{
 			//.Set("placeholder", metadata.DisplayName)
-			if (metadata.PropertyName == "Id" || metadata.IsReadOnly)
+			if (metadata.IsReadOnly)
 			{
 				return htmlHelper.ReadOnly(metadata.Model, htmlAttributes);
 			}

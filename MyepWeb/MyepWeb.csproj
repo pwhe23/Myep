@@ -131,6 +131,8 @@
     <Compile Include="App-Code\Extensions.cs" />
     <Compile Include="App-Code\Intern.cs" />
     <Compile Include="App-Code\Employer.cs" />
+    <Compile Include="App-Code\Membership.cs" />
+    <Compile Include="App-Code\User.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -149,6 +151,9 @@
     <Content Include="Views\App\Employer.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\App\Assign.cshtml" />
+    <Content Include="Views\App\Login.cshtml" />
+    <Content Include="Views\App\Users.cshtml" />
+    <Content Include="Views\App\User.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
